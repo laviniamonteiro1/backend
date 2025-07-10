@@ -22,7 +22,9 @@ class SQLAlchemyReservationRepository(ReservationRepository):
         reservation.id = model.id
         return model.to_entity()
 
-    async def get_reservation_by_id(self, reservation_id: str) -> Optional["Reservation"]:
+    async def get_reservation_by_id(
+        self, reservation_id: str
+    ) -> Optional["Reservation"]:
         stmt = select(ReservationModel).where(ReservationModel.id == reservation_id)
         result = await self._session.execute(stmt)
         reservation_model = result.scalar_one_or_none()
@@ -34,7 +36,9 @@ class SQLAlchemyReservationRepository(ReservationRepository):
         reservation_models = result.scalars().all()
         return [model.to_entity() for model in reservation_models]
 
-    async def update_reservation(self, reservation: "Reservation") -> Optional["Reservation"]:
+    async def update_reservation(
+        self, reservation: "Reservation"
+    ) -> Optional["Reservation"]:
         stmt = select(ReservationModel).where(ReservationModel.id == reservation.id)
         result = await self._session.execute(stmt)
         existing_model = result.scalar_one_or_none()

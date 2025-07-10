@@ -4,7 +4,9 @@ from blog.usecases.bedroom.list_bedroom import ListBedroom
 from blog.domain.entities.bedroom import Bedroom
 from sqlalchemy.ext.asyncio import AsyncSession
 from blog.api.deps import get_db_session, get_bedroom_repository, get_current_user
-from blog.infra.repositories.sqlalchemy.sqlalchemy_bedroom_repository import SQLAlchemyBedroomRepository
+from blog.infra.repositories.sqlalchemy.sqlalchemy_bedroom_repository import (
+    SQLAlchemyBedroomRepository,
+)
 from blog.api.schemas.bedroom_schema import (
     BedroomOutput,
     MessageBedroomResponse,
@@ -17,8 +19,8 @@ router = APIRouter()
 
 
 @router.get(
-    "/", # Caminho ajustado para ser relativo ao prefixo /bedrooms
-    response_model=MessageBedroomResponse, # Ajustado para MessageBedroomResponse para listagem
+    "/",  # Caminho ajustado para ser relativo ao prefixo /bedrooms
+    response_model=MessageBedroomResponse,  # Ajustado para MessageBedroomResponse para listagem
     summary="Listar todos os quartos",
 )
 async def list_all_bedrooms_endpoint(
@@ -32,7 +34,7 @@ async def list_all_bedrooms_endpoint(
 
 
 @router.get(
-    "/{bedroom_id}", # Caminho ajustado para ser relativo ao prefixo /bedrooms
+    "/{bedroom_id}",  # Caminho ajustado para ser relativo ao prefixo /bedrooms
     response_model=BedroomOutput,
     summary="Obter detalhes de um quarto por ID",
 )

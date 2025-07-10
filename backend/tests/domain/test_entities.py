@@ -22,7 +22,15 @@ def test_invalid_role():
 def test_create_reservation():
     check_in_str = "25/12/2024 às 14h00"
     check_out_str = "30/12/2024 às 11h00"
-    reservation = Reservation("res1", "user1", "Viagem de Férias", "Rua A, 123", check_in_str, check_out_str, "Pendente")
+    reservation = Reservation(
+        "res1",
+        "user1",
+        "Viagem de Férias",
+        "Rua A, 123",
+        check_in_str,
+        check_out_str,
+        "Pendente",
+    )
     assert reservation.title == "Viagem de Férias"
     assert isinstance(reservation.check_in, datetime)
     assert reservation.status == "Pendente"
@@ -31,7 +39,15 @@ def test_create_reservation():
 def test_cancel_reservation():
     check_in_str = "25/12/2024 às 14h00"
     check_out_str = "30/12/2024 às 11h00"
-    reservation = Reservation("res1", "user1", "Viagem de Férias", "Rua A, 123", check_in_str, check_out_str, "Pendente")
+    reservation = Reservation(
+        "res1",
+        "user1",
+        "Viagem de Férias",
+        "Rua A, 123",
+        check_in_str,
+        check_out_str,
+        "Pendente",
+    )
     reservation.cancel_reservation()
     assert reservation.status == "Cancelada"
 
@@ -39,7 +55,15 @@ def test_cancel_reservation():
 def test_update_reservation():
     check_in_str = "25/12/2024 às 14h00"
     check_out_str = "30/12/2024 às 11h00"
-    reservation = Reservation("res1", "user1", "Viagem de Férias", "Rua A, 123", check_in_str, check_out_str, "Pendente")
+    reservation = Reservation(
+        "res1",
+        "user1",
+        "Viagem de Férias",
+        "Rua A, 123",
+        check_in_str,
+        check_out_str,
+        "Pendente",
+    )
 
     new_check_in_dt = datetime.strptime("26/12/2024 às 15h00", "%d/%m/%Y às %Hh%M")
     new_check_out_dt = datetime.strptime("31/12/2024 às 12h00", "%d/%m/%Y às %Hh%M")
@@ -55,6 +79,12 @@ def test_update_reservation():
 
 
 def test_create_bedroom():
-    bedroom = Bedroom("bed1", "Quarto Deluxe", "Quarto espaçoso com vista para o mar", "R$ 300.00", "deluxe_img.jpg")
+    bedroom = Bedroom(
+        "bed1",
+        "Quarto Deluxe",
+        "Quarto espaçoso com vista para o mar",
+        "R$ 300.00",
+        "deluxe_img.jpg",
+    )
     assert bedroom.title == "Quarto Deluxe"
     assert bedroom.price == "R$ 300.00"

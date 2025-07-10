@@ -1,13 +1,17 @@
 import uuid
 import pytest
-import datetime # Importe datetime se ainda não estiver importado
+import datetime  # Importe datetime se ainda não estiver importado
 
 from blog.domain.entities.user import User
 from blog.domain.entities.reservation import Reservation
 from blog.domain.value_objects.email_vo import Email
 from blog.domain.value_objects.password import Password
-from blog.infra.repositories.in_memory.in_memory_user_repository import InMemoryUserRepository
-from blog.infra.repositories.in_memory.in_memory_reservation_repository import InMemoryReservationRepository
+from blog.infra.repositories.in_memory.in_memory_user_repository import (
+    InMemoryUserRepository,
+)
+from blog.infra.repositories.in_memory.in_memory_reservation_repository import (
+    InMemoryReservationRepository,
+)
 
 from blog.usecases.reservation.create_reservation import CreateReservation
 from blog.usecases.reservation.get_user_reservation_by_id import GetUserReservationById
@@ -22,14 +26,18 @@ def create_test_user() -> User:
         id=str(uuid.uuid4()),
         name="Test User",
         email=Email("test@example.com"),
-        password=Password("Secure@Pass123!"), # Senha ajustada aqui
+        password=Password("Secure@Pass123!"),  # Senha ajustada aqui
         role="user",
     )
 
 
 def create_test_reservation(user_id: str) -> Reservation:
-    check_in_str = (datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=10)).strftime("%d/%m/%Y às %Hh%M")
-    check_out_str = (datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=15)).strftime("%d/%m/%Y às %Hh%M")
+    check_in_str = (
+        datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=10)
+    ).strftime("%d/%m/%Y às %Hh%M")
+    check_out_str = (
+        datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=15)
+    ).strftime("%d/%m/%Y às %Hh%M")
     return Reservation(
         id=str(uuid.uuid4()),
         user_id=user_id,
@@ -49,8 +57,12 @@ async def test_create_reservation_use_case():
     await user_repo.register(user)
 
     usecase = CreateReservation(reservation_repo, user_repo)
-    check_in_str = (datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=10)).strftime("%d/%m/%Y às %Hh%M")
-    check_out_str = (datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=15)).strftime("%d/%m/%Y às %Hh%M")
+    check_in_str = (
+        datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=10)
+    ).strftime("%d/%m/%Y às %Hh%M")
+    check_out_str = (
+        datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=15)
+    ).strftime("%d/%m/%Y às %Hh%M")
 
     reservation = await usecase.execute(
         user_id=user.id,
@@ -100,7 +112,10 @@ async def test_cancel_reservation_use_case():
 
     assert canceled_reservation is not None
     assert canceled_reservation.status == "Cancelada"
-    assert await reservation_repo.get_reservation_by_id(reservation.id) == canceled_reservation
+    assert (
+        await reservation_repo.get_reservation_by_id(reservation.id)
+        == canceled_reservation
+    )
 
 
 @pytest.mark.asyncio
@@ -111,9 +126,13 @@ async def test_update_reservation_use_case():
     await reservation_repo.create_reservation(reservation)
 
     usecase = UpdateReservation(reservation_repo)
-    new_check_in_str = (datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=12)).strftime("%d/%m/%Y às %Hh%M")
-    new_check_out_str = (datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=18)).strftime("%d/%m/%Y às %Hh%M")
-    
+    new_check_in_str = (
+        datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=12)
+    ).strftime("%d/%m/%Y às %Hh%M")
+    new_check_out_str = (
+        datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=18)
+    ).strftime("%d/%m/%Y às %Hh%M")
+
     updated_reservation = await usecase.execute(
         reservation_id=reservation.id,
         new_check_in_str=new_check_in_str,
@@ -122,10 +141,17 @@ async def test_update_reservation_use_case():
     )
 
     assert updated_reservation is not None
-    assert updated_reservation.check_in == datetime.datetime.strptime(new_check_in_str, "%d/%m/%Y às %Hh%M")
-    assert updated_reservation.check_out == datetime.datetime.strptime(new_check_out_str, "%d/%m/%Y às %Hh%M")
+    assert updated_reservation.check_in == datetime.datetime.strptime(
+        new_check_in_str, "%d/%m/%Y às %Hh%M"
+    )
+    assert updated_reservation.check_out == datetime.datetime.strptime(
+        new_check_out_str, "%d/%m/%Y às %Hh%M"
+    )
     assert updated_reservation.status == "Confirmada"
-    assert await reservation_repo.get_reservation_by_id(reservation.id) == updated_reservation
+    assert (
+        await reservation_repo.get_reservation_by_id(reservation.id)
+        == updated_reservation
+    )
 
 
 @pytest.mark.asyncio
@@ -148,7 +174,7 @@ async def test_list_reservation_use_case():
     user1 = create_test_user()
     reservation1 = create_test_reservation(user1.id)
     reservation2 = create_test_reservation(user1.id)
-    
+
     user2 = create_test_user()
     reservation3 = create_test_reservation(user2.id)
 

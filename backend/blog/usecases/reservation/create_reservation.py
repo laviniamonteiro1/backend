@@ -7,11 +7,20 @@ from blog.domain.repositories.user_repository import UserRepository
 
 
 class CreateReservation:
-    def __init__(self, reservation_repo: ReservationRepository, user_repo: UserRepository):
+    def __init__(
+        self, reservation_repo: ReservationRepository, user_repo: UserRepository
+    ):
         self._reservation_repo = reservation_repo
         self._user_repo = user_repo
 
-    async def execute(self, user_id: str, title: str, address: str, check_in_str: str, check_out_str: str) -> Reservation:
+    async def execute(
+        self,
+        user_id: str,
+        title: str,
+        address: str,
+        check_in_str: str,
+        check_out_str: str,
+    ) -> Reservation:
         user = await self._user_repo.get_by_id(user_id)
         if not user:
             raise ValueError("User not found.")

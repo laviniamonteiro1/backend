@@ -17,7 +17,9 @@ class ReservationRepository(ABC):
         pass
 
     @abstractmethod
-    async def update_reservation(self, reservation: Reservation) -> Optional[Reservation]:
+    async def update_reservation(
+        self, reservation: Reservation
+    ) -> Optional[Reservation]:
         pass
 
     @abstractmethod

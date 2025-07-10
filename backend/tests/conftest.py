@@ -55,7 +55,9 @@ async def client(db_session):
     async with LifespanManager(app):
         transport = ASGITransport(app=app)
         # Adiciona follow_redirects=True aqui
-        async with AsyncClient(transport=transport, base_url="http://test", follow_redirects=True) as ac: 
+        async with AsyncClient(
+            transport=transport, base_url="http://test", follow_redirects=True
+        ) as ac:
             yield ac
 
     app.dependency_overrides.clear()

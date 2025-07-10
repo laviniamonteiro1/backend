@@ -19,8 +19,9 @@ class UserModel(Base):
     role: Mapped[str] = mapped_column(sa.String, default="user")
 
     # Removidos relacionamentos 'posts' e 'comments'
-    reservations = relationship("ReservationModel", back_populates="user", cascade="all, delete")
-
+    reservations = relationship(
+        "ReservationModel", back_populates="user", cascade="all, delete"
+    )
 
     @classmethod
     def from_entity(cls, entity: User) -> "UserModel":

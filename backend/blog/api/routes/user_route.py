@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status # Importe status
+from fastapi import APIRouter, HTTPException, Depends, status  # Importe status
 from blog.usecases.user.register_user import RegisterUserUseCase
 from blog.usecases.user.login_user import LoginUserUseCase
 from blog.usecases.user.logout_user import LogoutUserUseCase
@@ -35,7 +35,7 @@ router = APIRouter()
 @router.post(
     "/register",
     response_model=MessageUserResponse,
-    status_code=status.HTTP_201_CREATED, # <<< ADICIONADO AQUI
+    status_code=status.HTTP_201_CREATED,  # <<< ADICIONADO AQUI
     summary="Registrar novo usuário",
     description="Cria um novo usuário com nome, email e senha forte.",
 )

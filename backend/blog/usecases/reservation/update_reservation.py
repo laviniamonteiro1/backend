@@ -18,8 +18,16 @@ class UpdateReservation:
     ) -> Optional[Reservation]:
         reservation = await self._reservation_repo.get_reservation_by_id(reservation_id)
         if reservation:
-            check_in_dt = datetime.strptime(new_check_in_str, "%d/%m/%Y às %Hh%M") if new_check_in_str else None
-            check_out_dt = datetime.strptime(new_check_out_str, "%d/%m/%Y às %Hh%M") if new_check_out_str else None
+            check_in_dt = (
+                datetime.strptime(new_check_in_str, "%d/%m/%Y às %Hh%M")
+                if new_check_in_str
+                else None
+            )
+            check_out_dt = (
+                datetime.strptime(new_check_out_str, "%d/%m/%Y às %Hh%M")
+                if new_check_out_str
+                else None
+            )
 
             reservation.update_reservation(
                 new_check_in=check_in_dt,

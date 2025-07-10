@@ -10,12 +10,12 @@ async def test_register_and_login(client):
         json={
             "name": "Test",
             "email": "test@example.com",
-            "password": "test@A123", # A senha deve ser forte o suficiente se houver validação no Password VO
+            "password": "test@A123",  # A senha deve ser forte o suficiente se houver validação no Password VO
             "role": "user",
         },
     )
     # Voltou a esperar 201, pois a API agora retorna 201 para registro
-    assert response.status_code == 201 
+    assert response.status_code == 201
     data = response.json()
     assert data["message"] == "User registered successfully"
 
@@ -45,11 +45,11 @@ async def test_admin_user_registration(client):
         json={
             "name": "Admin User",
             "email": "admin@example.com",
-            "password": "admin@A123!", # Senha ajustada para robusta
+            "password": "admin@A123!",  # Senha ajustada para robusta
             "role": "admin",
         },
     )
     # Voltou a esperar 201, pois a API agora retorna 201 para registro
-    assert response.status_code == 201 
+    assert response.status_code == 201
     data = response.json()
     assert data["user"]["role"] == "admin"

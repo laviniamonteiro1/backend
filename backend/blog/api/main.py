@@ -34,5 +34,7 @@ def ola():
 
 
 app.include_router(user_route.router, prefix="/users", tags=["Users"])
-app.include_router(reservation_route.router, prefix="/reservations", tags=["Reservations"])
+app.include_router(
+    reservation_route.router, prefix="/reservations", tags=["Reservations"]
+)
 app.include_router(bedroom_route.router, prefix="/bedrooms", tags=["Bedrooms"])

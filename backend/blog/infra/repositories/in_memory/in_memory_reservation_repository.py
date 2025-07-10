@@ -6,7 +6,7 @@ import pytest
 
 class InMemoryReservationRepository(ReservationRepository):
     def __init__(self):
-        self._reservations = {} 
+        self._reservations = {}
 
     @pytest.mark.asyncio
     async def create_reservation(self, reservation: Reservation) -> Reservation:
@@ -29,7 +29,9 @@ class InMemoryReservationRepository(ReservationRepository):
         ]
 
     @pytest.mark.asyncio
-    async def update_reservation(self, reservation: Reservation) -> Optional[Reservation]:
+    async def update_reservation(
+        self, reservation: Reservation
+    ) -> Optional[Reservation]:
         """Atualiza uma reserva existente. Retorna None se não encontrar a reserva."""
         if reservation.id in self._reservations:
             self._reservations[reservation.id] = reservation

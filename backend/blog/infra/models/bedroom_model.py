@@ -21,7 +21,7 @@ class BedroomModel(Base):
     image: Mapped[str] = mapped_column(sa.String, nullable=False)
 
     @classmethod
-    def from_entity(cls, entity: "Bedroom") -> "BedroomModel": # "Bedroom" como string
+    def from_entity(cls, entity: "Bedroom") -> "BedroomModel":  # "Bedroom" como string
         return cls(
             id=entity.id,
             title=entity.title,

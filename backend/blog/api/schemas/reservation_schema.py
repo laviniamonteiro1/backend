@@ -4,8 +4,15 @@ from datetime import datetime
 
 
 class ReservationCreateInput(BaseModel):
-    title: str = Field(..., min_length=3, max_length=100, description="Título da reserva")
-    address: str = Field(..., min_length=5, max_length=200, description="Endereço da propriedade reservada")
+    title: str = Field(
+        ..., min_length=3, max_length=100, description="Título da reserva"
+    )
+    address: str = Field(
+        ...,
+        min_length=5,
+        max_length=200,
+        description="Endereço da propriedade reservada",
+    )
     check_in: str = Field(
         ...,
         pattern=r"^\d{2}/\d{2}/\d{4} às \d{2}h\d{2}$",
@@ -29,7 +36,9 @@ class ReservationUpdateInput(BaseModel):
         pattern=r"^\d{2}/\d{2}/\d{4} às \d{2}h\d{2}$",
         description="Nova data e hora de check-out (ex: 30/12/2024 às 11h00)",
     )
-    status: Optional[str] = Field(None, description="Novo status da reserva (ex: 'Confirmada', 'Cancelada')")
+    status: Optional[str] = Field(
+        None, description="Novo status da reserva (ex: 'Confirmada', 'Cancelada')"
+    )
 
 
 class ReservationOutput(BaseModel):
@@ -48,8 +57,16 @@ class ReservationOutput(BaseModel):
             user_id=entity.user_id,
             title=entity.title,
             address=entity.address,
-            check_in=entity.check_in.strftime("%d/%m/%Y às %Hh%M") if isinstance(entity.check_in, datetime) else entity.check_in,
-            check_out=entity.check_out.strftime("%d/%m/%Y às %Hh%M") if isinstance(entity.check_out, datetime) else entity.check_out,
+            check_in=(
+                entity.check_in.strftime("%d/%m/%Y às %Hh%M")
+                if isinstance(entity.check_in, datetime)
+                else entity.check_in
+            ),
+            check_out=(
+                entity.check_out.strftime("%d/%m/%Y às %Hh%M")
+                if isinstance(entity.check_out, datetime)
+                else entity.check_out
+            ),
             status=entity.status,
         )
 

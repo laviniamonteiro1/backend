@@ -3,7 +3,9 @@
 from typing import Optional, List, TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import delete # delete pode ser removido se não houver outras operações de delete
+from sqlalchemy import (
+    delete,
+)  # delete pode ser removido se não houver outras operações de delete
 
 from blog.domain.repositories.bedroom_repository import BedroomRepository
 from blog.infra.models.bedroom_model import BedroomModel
@@ -35,4 +37,3 @@ class SQLAlchemyBedroomRepository(BedroomRepository):
         result = await self._session.execute(stmt)
         bedroom_models = result.scalars().all()
         return [model.to_entity() for model in bedroom_models]
-

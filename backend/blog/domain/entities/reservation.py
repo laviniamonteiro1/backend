@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class Reservation:
     def __init__(self, id, user_id, title, address, check_in, check_out, status):
         self.id = id
@@ -14,7 +15,9 @@ class Reservation:
         if self.status != "Cancelada":
             self.status = "Cancelada"
 
-    def update_reservation(self, new_check_in=None, new_check_out=None, new_status=None):
+    def update_reservation(
+        self, new_check_in=None, new_check_out=None, new_status=None
+    ):
         if new_check_in:
             self.check_in = new_check_in
         if new_check_out:

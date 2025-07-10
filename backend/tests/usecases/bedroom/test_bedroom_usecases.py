@@ -2,7 +2,9 @@ import uuid
 import pytest
 
 from blog.domain.entities.bedroom import Bedroom
-from blog.infra.repositories.in_memory.in_memory_bedroom_repository import InMemoryBedroomRepository
+from blog.infra.repositories.in_memory.in_memory_bedroom_repository import (
+    InMemoryBedroomRepository,
+)
 
 from blog.usecases.bedroom.get_bedroom_by_id import GetBedroomById
 from blog.usecases.bedroom.list_bedroom import ListBedroom

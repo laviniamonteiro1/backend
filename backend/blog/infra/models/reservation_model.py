@@ -15,7 +15,9 @@ class ReservationModel(Base):
     id: Mapped[str] = mapped_column(
         sa.String, primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    user_id: Mapped[str] = mapped_column(sa.String, sa.ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[str] = mapped_column(
+        sa.String, sa.ForeignKey("users.id"), nullable=False
+    )
     title: Mapped[str] = mapped_column(sa.String, nullable=False)
     address: Mapped[str] = mapped_column(sa.String, nullable=False)
     check_in: Mapped[datetime] = mapped_column(sa.DateTime, nullable=False)
