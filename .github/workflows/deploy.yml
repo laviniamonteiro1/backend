@@ -1,0 +1,88 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports: [5432:5432]
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://test_user:test_password@localhost:5432/test_db
+      DOCKER_ENV: 0
+      POSTGRES_USER: "test_user"
+      POSTGRES_PASSWORD: "test_password"
+      POSTGRES_DB: "test_db"
+      POSTGRES_PORT: "5432"
+      POSTGRES_HOST: "localhost"
+      DATABASE_URL_ALEMBIC: "postgresql+asyncpg://test_user:test_password@localhost:5432/test_db"
+      DATABASE_URL_TEST: "postgresql+asyncpg://test_user:test_password@localhost:5432/test_db"
+      SECRET_KEY: "your_secret"
+      ALGORITHM: "HS256"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run mypy
+        working-directory: ./backend
+        run: make typecheck
+
+      - name: Run tests with coverage
+        working-directory: ./backend
+        run: make test-cov
+
+      - name: Verifica se o código está formatado
+        working-directory: ./backend
+        run: make lint
+
+  deploy:
+    name: Trigger Render Deploy
+    runs-on: ubuntu-latest
+    needs: test
+    if: success()
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        working-directory: ./
+        run: docker build -f Dockerfile.prod -t ${{ secrets.DOCKER_HUB_USERNAME }}/blog-api:latest backend
+
+      - name: Push to Docker Hub
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/blog-api:latest
+
+      - name: Send deploy hook to Render
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
