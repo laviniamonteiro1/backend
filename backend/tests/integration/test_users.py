@@ -8,7 +8,7 @@ async def test_register_and_login(client):
         json={
             "name": "Test",
             "email": "test@example.com",
-            "password": "test@A123", 
+            "password": "test@A123",
             "role": "user",
         },
     )
@@ -40,7 +40,7 @@ async def test_admin_user_registration(client):
         json={
             "name": "Admin User",
             "email": "admin@example.com",
-            "password": "admin@A123!", 
+            "password": "admin@A123!",
             "role": "admin",
         },
     )

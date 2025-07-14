@@ -247,9 +247,7 @@ async def test_get_reservations_by_user_id_with_reservations(client):
     )
 
     assert list_response.status_code == 404
-    assert (
-        list_response.json()["detail"] == "Reservation not found"
-    )
+    assert list_response.json()["detail"] == "Reservation not found"
 
 
 @pytest.mark.asyncio

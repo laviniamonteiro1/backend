@@ -14,11 +14,9 @@ async def test_get_bedroom_by_id(client):
 
     response = await client.get(f"/bedrooms/{test_id}")
 
-    if test_id == dummy_bedroom_id: 
+    if test_id == dummy_bedroom_id:
         assert response.status_code == 404
-        assert (
-            response.json()["detail"] == "Bedroom not found"
-        )
+        assert response.json()["detail"] == "Bedroom not found"
     else:
         assert response.status_code == 200
         data = response.json()
@@ -32,7 +30,7 @@ async def test_get_bedroom_by_id(client):
 @pytest.mark.asyncio
 async def test_list_bedrooms(client):
     response = await client.get("/bedrooms")
-    assert response.status_code == 200 
+    assert response.status_code == 200
     data = response.json()
     assert "message" in data
     assert "bedrooms" in data
