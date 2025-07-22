@@ -1,12 +1,15 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Literal
+from typing import Literal, Optional
 
 
 class RegisterUserInput(BaseModel):
     name: str = Field(..., min_length=3, max_length=50, description="Nome do usuário")
     email: EmailStr = Field(..., description="Email do usuário")
     password: str = Field(..., min_length=8, description="Senha do usuário")
-    role: Literal["user", "admin"]
+    role: Literal["user", "admin"] = "user"
+    phone: Optional[str] = Field(None, description="Número de telefone do usuário")
+    document: Optional[str] = Field(None, description="Número de documento do usuário")
+    address: Optional[str] = Field(None, description="Endereço completo do usuário")
 
 
 class LoginUserInput(BaseModel):
@@ -23,6 +26,9 @@ class UserOutput(BaseModel):
     name: str = Field(..., min_length=3, max_length=50, description="Nome do usuário")
     email: str = Field(..., description="Email do usuário")
     role: str = Field(..., description="Papel do usuário (admin, user)")
+    phone: Optional[str] = Field(None, description="Número de telefone do usuário")
+    document: Optional[str] = Field(None, description="Número de documento do usuário")
+    address: Optional[str] = Field(None, description="Endereço completo do usuário")
 
     @classmethod
     def from_entity(cls, user):
@@ -31,6 +37,9 @@ class UserOutput(BaseModel):
             name=user.name,
             email=str(user.email),
             role=user.role,
+            phone=user.phone,
+            document=user.document,
+            address=user.address,
         )
 
 

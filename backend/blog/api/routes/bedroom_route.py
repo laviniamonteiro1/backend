@@ -19,8 +19,8 @@ router = APIRouter()
 
 
 @router.get(
-    "/",  # Caminho ajustado para ser relativo ao prefixo /bedrooms
-    response_model=MessageBedroomResponse,  # Ajustado para MessageBedroomResponse para listagem
+    "/",  
+    response_model=MessageBedroomResponse,  
     summary="Listar todos os quartos",
 )
 async def list_all_bedrooms_endpoint(

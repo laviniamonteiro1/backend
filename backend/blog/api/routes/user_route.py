@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status  # Importe status
+from fastapi import APIRouter, HTTPException, Depends, status
 from blog.usecases.user.register_user import RegisterUserUseCase
 from blog.usecases.user.login_user import LoginUserUseCase
 from blog.usecases.user.logout_user import LogoutUserUseCase
@@ -27,15 +27,11 @@ from blog.api.security import verify_token
 security = HTTPBearer()
 router = APIRouter()
 
-# ----------------------
-# Register
-# ----------------------
-
 
 @router.post(
     "/register",
     response_model=MessageUserResponse,
-    status_code=status.HTTP_201_CREATED,  # <<< ADICIONADO AQUI
+    status_code=status.HTTP_201_CREATED,
     summary="Registrar novo usuário",
     description="Cria um novo usuário com nome, email e senha forte.",
 )
@@ -51,6 +47,9 @@ async def register_user(
             email=Email(data.email),
             password=Password(data.password),
             role=data.role,
+            phone=data.phone,    # Adicionado phone
+            document=data.document, # Adicionado document
+            address=data.address, # Adicionado address (corrigido o typo)
         )
         result = await usecase.execute(user)
         return MessageUserResponse(
@@ -60,11 +59,6 @@ async def register_user(
         raise HTTPException(status_code=400, detail=str(p))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-
-# ----------------------
-# Login
-# ----------------------
 
 
 @router.post(
@@ -90,11 +84,6 @@ async def login_user(
         raise HTTPException(status_code=401, detail=str(e))
 
 
-# ----------------------
-# Get Current User
-# ----------------------
-
-
 @router.get(
     "/me",
     response_model=UserOutput,
@@ -111,6 +100,26 @@ async def get_me_user(
             "name": user.name,
             "email": str(user.email),
             "role": user.role,
+            "phone": user.phone,
+            "document": user.document,
+            "address": user.address, # Typo 'adress' corrigido para 'address'
         }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+@router.post(
+    "/logout",
+    response_model=MessageUserResponse,
+    summary="Fazer Logout do usuário",
+    description="Realiza o logout do usuário, invalidando a sessão.",
+    status_code=status.HTTP_200_OK
+)
+async def logout_user_route(
+    user_repo: UserRepository = Depends(get_user_repository),
+):
+    try:
+        usecase = LogoutUserUseCase(user_repo)
+        await usecase.execute()
+        return MessageUserResponse(message="Logout realizado com sucesso!")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao fazer logout: {e}")

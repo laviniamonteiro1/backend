@@ -5,6 +5,7 @@ from blog.domain.value_objects.email_vo import Email
 from blog.domain.value_objects.password import Password
 import uuid
 from blog.infra.database import Base
+from typing import Optional
 
 
 class UserModel(Base):
@@ -18,7 +19,10 @@ class UserModel(Base):
     password: Mapped[str] = mapped_column(sa.String, nullable=False)
     role: Mapped[str] = mapped_column(sa.String, default="user")
 
-    # Removidos relacionamentos 'posts' e 'comments'
+    phone: Mapped[Optional[str]] = mapped_column(sa.String, nullable=True)
+    document: Mapped[Optional[str]] = mapped_column(sa.String, nullable=True)
+    address: Mapped[Optional[str]] = mapped_column(sa.String, nullable=True)
+
     reservations = relationship(
         "ReservationModel", back_populates="user", cascade="all, delete"
     )
@@ -31,6 +35,9 @@ class UserModel(Base):
             email=str(entity.email),
             password=str(entity.password),
             role=entity.role,
+            phone=entity.phone,
+            document=entity.document,
+            address=entity.address,
         )
 
     def to_entity(self) -> User:
@@ -40,4 +47,7 @@ class UserModel(Base):
             email=Email(self.email),
             password=Password(self.password),
             role=self.role,
+            phone=self.phone,
+            document=self.document,
+            address=self.address,
         )
