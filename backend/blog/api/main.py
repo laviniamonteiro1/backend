@@ -93,7 +93,7 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory="blog/api/static"), name="static")
 
 
-origins = ["http://localhost:5173", "https://royalstay-v2.vercel.app"]
+origins = ["http://localhost:5173", "https://web-front-omega.vercel.app"]
 
 app.add_middleware(
     CORSMiddleware,
