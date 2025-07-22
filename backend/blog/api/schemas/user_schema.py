@@ -45,4 +45,4 @@ class UserOutput(BaseModel):
 
 class MessageUserResponse(BaseModel):
     message: str
-    user: UserOutput
+    user: Optional[UserOutput] = None

@@ -1,6 +1,6 @@
 import uuid
 import pytest
-import datetime  # Importe datetime se ainda não estiver importado
+import datetime
 
 from blog.domain.entities.user import User
 from blog.domain.entities.reservation import Reservation
@@ -26,8 +26,12 @@ def create_test_user() -> User:
         id=str(uuid.uuid4()),
         name="Test User",
         email=Email("test@example.com"),
-        password=Password("Secure@Pass123!"),  # Senha ajustada aqui
+        password=Password("Secure@Pass123!"),
         role="user",
+        # CORREÇÃO: Adicionado phone, document, address para o construtor de User
+        phone=None,
+        document=None,
+        address=None,
     )
 
 
@@ -45,7 +49,7 @@ def create_test_reservation(user_id: str) -> Reservation:
         address="Rua Teste, 123",
         check_in=check_in_str,
         check_out=check_out_str,
-        status="Pendente",
+        status="Pendente",  # Mantido "Pendente" para o estado inicial de criação
     )
 
 
@@ -111,7 +115,8 @@ async def test_cancel_reservation_use_case():
     canceled_reservation = await usecase.execute(reservation.id)
 
     assert canceled_reservation is not None
-    assert canceled_reservation.status == "Cancelada"
+    # CORREÇÃO: O status agora é "cancelled" (inglês, minúsculo)
+    assert canceled_reservation.status == "cancelled"
     assert (
         await reservation_repo.get_reservation_by_id(reservation.id)
         == canceled_reservation
@@ -126,28 +131,36 @@ async def test_update_reservation_use_case():
     await reservation_repo.create_reservation(reservation)
 
     usecase = UpdateReservation(reservation_repo)
+    new_title = "Reserva Teste Atualizada"
+    new_address = "Novo Endereço, 456"
     new_check_in_str = (
         datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=12)
     ).strftime("%d/%m/%Y às %Hh%M")
     new_check_out_str = (
         datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(days=18)
     ).strftime("%d/%m/%Y às %Hh%M")
+    new_status = "confirmed"  # Status em inglês, como a entidade espera
 
     updated_reservation = await usecase.execute(
         reservation_id=reservation.id,
+        # CORREÇÃO: Adicionado new_title e new_address
+        new_title=new_title,
+        new_address=new_address,
         new_check_in_str=new_check_in_str,
         new_check_out_str=new_check_out_str,
-        new_status="Confirmada",
+        new_status=new_status,
     )
 
     assert updated_reservation is not None
+    assert updated_reservation.title == new_title
+    assert updated_reservation.address == new_address
     assert updated_reservation.check_in == datetime.datetime.strptime(
         new_check_in_str, "%d/%m/%Y às %Hh%M"
     )
     assert updated_reservation.check_out == datetime.datetime.strptime(
         new_check_out_str, "%d/%m/%Y às %Hh%M"
     )
-    assert updated_reservation.status == "Confirmada"
+    assert updated_reservation.status == new_status
     assert (
         await reservation_repo.get_reservation_by_id(reservation.id)
         == updated_reservation

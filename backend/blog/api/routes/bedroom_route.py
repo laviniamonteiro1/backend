@@ -19,8 +19,8 @@ router = APIRouter()
 
 
 @router.get(
-    "/",  
-    response_model=MessageBedroomResponse,  
+    "/",
+    response_model=MessageBedroomResponse,
     summary="Listar todos os quartos",
 )
 async def list_all_bedrooms_endpoint(

@@ -41,15 +41,16 @@ async def register_user(
     try:
         user_repo = SQLAlchemyUserRepository(db)
         usecase = RegisterUserUseCase(user_repo)
+        # As linhas 50-52 estão corretas devido à alteração na entidade User
         user = User(
             id=str(uuid.uuid4()),
             name=data.name,
             email=Email(data.email),
             password=Password(data.password),
             role=data.role,
-            phone=data.phone,    # Adicionado phone
-            document=data.document, # Adicionado document
-            address=data.address, # Adicionado address (corrigido o typo)
+            phone=data.phone,
+            document=data.document,
+            address=data.address,
         )
         result = await usecase.execute(user)
         return MessageUserResponse(
@@ -102,17 +103,18 @@ async def get_me_user(
             "role": user.role,
             "phone": user.phone,
             "document": user.document,
-            "address": user.address, # Typo 'adress' corrigido para 'address'
+            "address": user.address,
         }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
 
 @router.post(
     "/logout",
     response_model=MessageUserResponse,
     summary="Fazer Logout do usuário",
     description="Realiza o logout do usuário, invalidando a sessão.",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
 )
 async def logout_user_route(
     user_repo: UserRepository = Depends(get_user_repository),
@@ -120,6 +122,10 @@ async def logout_user_route(
     try:
         usecase = LogoutUserUseCase(user_repo)
         await usecase.execute()
-        return MessageUserResponse(message="Logout realizado com sucesso!")
+        # CORREÇÃO: Passando user=None para MessageUserResponse
+        return MessageUserResponse(message="Logout realizado com sucesso!", user=None)
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao fazer logout: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao fazer logout: {e}",
+        )

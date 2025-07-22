@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 
 class Reservation:
@@ -12,15 +13,24 @@ class Reservation:
         self.status = status
 
     def cancel_reservation(self):
-        if self.status != "Cancelada":
-            self.status = "Cancelada"
+        if self.status != "cancelled":
+            self.status = "cancelled"
 
     def update_reservation(
-        self, new_check_in=None, new_check_out=None, new_status=None
+        self,
+        new_title: Optional[str] = None,
+        new_address: Optional[str] = None,
+        new_check_in_str: Optional[str] = None,
+        new_check_out_str: Optional[str] = None,
+        new_status: Optional[str] = None,
     ):
-        if new_check_in:
-            self.check_in = new_check_in
-        if new_check_out:
-            self.check_out = new_check_out
-        if new_status:
+        if new_title is not None:
+            self.title = new_title
+        if new_address is not None:
+            self.address = new_address
+        if new_check_in_str is not None:
+            self.check_in = datetime.strptime(new_check_in_str, "%d/%m/%Y às %Hh%M")
+        if new_check_out_str is not None:
+            self.check_out = datetime.strptime(new_check_out_str, "%d/%m/%Y às %Hh%M")
+        if new_status is not None:
             self.status = new_status

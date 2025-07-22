@@ -10,13 +10,25 @@ from datetime import datetime
 def test_create_user():
     email = Email("user@example.com")
     pwd = Password("Secret@123")
-    user = User("1", "User", email, pwd, "user")
+    user = User(
+        "1", "User", email, pwd, "user", phone=None, document=None, address=None
+    )
     assert user.name == "User"
+    assert user.phone is None
 
 
 def test_invalid_role():
     with pytest.raises(ValueError):
-        User("1", "User", Email("user@example.com"), Password("Secret@123"), "invalid")
+        User(
+            "1",
+            "User",
+            Email("user@example.com"),
+            Password("Secret@123"),
+            "invalid",
+            phone=None,
+            document=None,
+            address=None,
+        )
 
 
 def test_create_reservation():
@@ -49,7 +61,7 @@ def test_cancel_reservation():
         "Pendente",
     )
     reservation.cancel_reservation()
-    assert reservation.status == "Cancelada"
+    assert reservation.status == "cancelled"
 
 
 def test_update_reservation():
@@ -65,17 +77,29 @@ def test_update_reservation():
         "Pendente",
     )
 
-    new_check_in_dt = datetime.strptime("26/12/2024 às 15h00", "%d/%m/%Y às %Hh%M")
-    new_check_out_dt = datetime.strptime("31/12/2024 às 12h00", "%d/%m/%Y às %Hh%M")
+    new_title = "Viagem Atualizada"
+    new_address = "Av. B, 456"
+    new_check_in_str_updated = "26/12/2024 às 15h00"
+    new_check_out_str_updated = "31/12/2024 às 12h00"
+    new_status = "confirmed"
 
     reservation.update_reservation(
-        new_check_in=new_check_in_dt,
-        new_check_out=new_check_out_dt,
-        new_status="Confirmada",
+        new_title=new_title,
+        new_address=new_address,
+        new_check_in_str=new_check_in_str_updated,
+        new_check_out_str=new_check_out_str_updated,
+        new_status=new_status,
     )
-    assert reservation.check_in == new_check_in_dt
-    assert reservation.check_out == new_check_out_dt
-    assert reservation.status == "Confirmada"
+
+    assert reservation.title == new_title
+    assert reservation.address == new_address
+    assert reservation.check_in == datetime.strptime(
+        new_check_in_str_updated, "%d/%m/%Y às %Hh%M"
+    )
+    assert reservation.check_out == datetime.strptime(
+        new_check_out_str_updated, "%d/%m/%Y às %Hh%M"
+    )
+    assert reservation.status == new_status
 
 
 def test_create_bedroom():

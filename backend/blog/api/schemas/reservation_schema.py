@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Literal
 from datetime import datetime
 
 
@@ -25,7 +25,17 @@ class ReservationCreateInput(BaseModel):
     )
 
 
+type ReservationStatusBackendInput = Literal["confirmed", "cancelled", "completed"]
+
+
 class ReservationUpdateInput(BaseModel):
+    title: Optional[str] = Field(
+        None, min_length=3, max_length=100, description="Novo título da reserva"
+    )
+    address: Optional[str] = Field(
+        None, min_length=5, max_length=200, description="Novo endereço da propriedade"
+    )
+
     check_in: Optional[str] = Field(
         None,
         pattern=r"^\d{2}/\d{2}/\d{4} às \d{2}h\d{2}$",
@@ -36,8 +46,9 @@ class ReservationUpdateInput(BaseModel):
         pattern=r"^\d{2}/\d{2}/\d{4} às \d{2}h\d{2}$",
         description="Nova data e hora de check-out (ex: 30/12/2024 às 11h00)",
     )
-    status: Optional[str] = Field(
-        None, description="Novo status da reserva (ex: 'Confirmada', 'Cancelada')"
+
+    status: Optional[ReservationStatusBackendInput] = Field(
+        None, description="Novo status da reserva (ex: 'confirmed', 'cancelled')"
     )
 
 

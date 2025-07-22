@@ -9,17 +9,17 @@ from datetime import datetime
 import uuid
 
 
-from fastapi.staticfiles import StaticFiles 
+from fastapi.staticfiles import StaticFiles
 
 from blog.api.routes import (
     reservation_route,
     user_route,
-    bedroom_route, 
+    bedroom_route,
 )
 
 from blog.api.openapi_tags import openapi_tags
 from blog.api.bedrooms_mock import BedroomMock
-from blog.infra.models.bedroom_model import BedroomModel 
+from blog.infra.models.bedroom_model import BedroomModel
 from blog.infra.database import async_session, engine
 
 
@@ -35,7 +35,9 @@ async def lifespan(app: FastAPI):
             qtd_quartos = total_bedrooms_result.scalar_one()
 
             if qtd_quartos == 0:
-                print("Banco de dados vazio. Populando com dados iniciais de quartos...")
+                print(
+                    "Banco de dados vazio. Populando com dados iniciais de quartos..."
+                )
 
                 for bedroom_data in BedroomMock:
                     bedroom_id = uuid.uuid4()
@@ -59,7 +61,9 @@ async def lifespan(app: FastAPI):
                 await db.commit()
                 print("Quartos mockados adicionados com sucesso.")
             else:
-                print(f"Banco de dados já contém {qtd_quartos} quartos. Nenhuma população necessária.")
+                print(
+                    f"Banco de dados já contém {qtd_quartos} quartos. Nenhuma população necessária."
+                )
 
         except Exception as e:
             print(f"Erro ao inserir dados iniciais de quartos: {e}")
@@ -119,6 +123,10 @@ def root():
 
 
 # Inclusão das rotas
-app.include_router(user_route.router, prefix="/auth", tags=["Users"]) # <--- LINHA CORRIGIDA AQUI!
+app.include_router(
+    user_route.router, prefix="/auth", tags=["Users"]
+)  # <--- LINHA CORRIGIDA AQUI!
 app.include_router(bedroom_route.router, prefix="/bedrooms", tags=["Bedrooms"])
-app.include_router(reservation_route.router, prefix="/reservations", tags=["Reservation"])
+app.include_router(
+    reservation_route.router, prefix="/reservations", tags=["Reservation"]
+)

@@ -12,26 +12,19 @@ class UpdateReservation:
     async def execute(
         self,
         reservation_id: str,
+        new_title: Optional[str] = None,
+        new_address: Optional[str] = None,
         new_check_in_str: Optional[str] = None,
         new_check_out_str: Optional[str] = None,
         new_status: Optional[str] = None,
     ) -> Optional[Reservation]:
         reservation = await self._reservation_repo.get_reservation_by_id(reservation_id)
         if reservation:
-            check_in_dt = (
-                datetime.strptime(new_check_in_str, "%d/%m/%Y às %Hh%M")
-                if new_check_in_str
-                else None
-            )
-            check_out_dt = (
-                datetime.strptime(new_check_out_str, "%d/%m/%Y às %Hh%M")
-                if new_check_out_str
-                else None
-            )
-
             reservation.update_reservation(
-                new_check_in=check_in_dt,
-                new_check_out=check_out_dt,
+                new_title=new_title,
+                new_address=new_address,
+                new_check_in_str=new_check_in_str,
+                new_check_out_str=new_check_out_str,
                 new_status=new_status,
             )
             return await self._reservation_repo.update_reservation(reservation)

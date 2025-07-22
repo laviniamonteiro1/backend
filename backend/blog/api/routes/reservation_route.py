@@ -28,6 +28,8 @@ from blog.api.schemas.reservation_schema import (
 from blog.domain.repositories.reservation_repository import ReservationRepository
 from blog.domain.repositories.user_repository import UserRepository
 from blog.domain.entities.user import User
+import sys
+import traceback
 
 router = APIRouter()
 
@@ -68,6 +70,27 @@ async def create_reservation_endpoint(
 
 
 @router.get(
+    "/me",
+    response_model=MessageReservationResponse,
+    summary="Listar reservas do usuário atual",
+)
+async def list_my_reservations_endpoint(
+    current_user: User = Depends(get_current_user),
+    reservation_repo: ReservationRepository = Depends(get_reservation_repository),
+):
+    try:
+        reservations = await reservation_repo.get_reservations_by_user_id(
+            current_user.id
+        )
+        return MessageReservationResponse(
+            message="User reservations retrieved successfully",
+            reservations=[ReservationOutput.from_entity(r) for r in reservations],
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
     "/{reservation_id}",
     response_model=ReservationOutput,
     summary="Obter detalhes da reserva",
@@ -85,25 +108,7 @@ async def get_reservation_by_id_endpoint(
         raise HTTPException(
             status_code=403, detail="Not authorized to view this reservation"
         )
-
     return ReservationOutput.from_entity(reservation)
-
-
-@router.get(
-    "/me",
-    response_model=MessageReservationResponse,
-    summary="Listar reservas do usuário atual",
-)
-async def list_my_reservations_endpoint(
-    current_user: User = Depends(get_current_user),
-    reservation_repo: ReservationRepository = Depends(get_reservation_repository),
-):
-    # CORREÇÃO: Usando o nome correto do método que existe na interface ReservationRepository
-    reservations = await reservation_repo.get_reservations_by_user_id(current_user.id)
-    return MessageReservationResponse(
-        message="User reservations retrieved successfully",
-        reservations=[ReservationOutput.from_entity(r) for r in reservations],
-    )
 
 
 @router.get(
@@ -138,18 +143,11 @@ async def update_reservation_endpoint(
     current_user: User = Depends(get_current_user),
     reservation_repo: ReservationRepository = Depends(get_reservation_repository),
 ):
-    reservation = await GetUserReservationById(reservation_repo).execute(reservation_id)
-    if not reservation:
-        raise HTTPException(status_code=404, detail="Reservation not found")
-
-    if current_user.role != "admin" and reservation.user_id != current_user.id:
-        raise HTTPException(
-            status_code=403, detail="Not authorized to update this reservation"
-        )
-
     try:
         updated_reservation = await UpdateReservation(reservation_repo).execute(
             reservation_id=reservation_id,
+            new_title=data.title,
+            new_address=data.address,
             new_check_in_str=data.check_in,
             new_check_out_str=data.check_out,
             new_status=data.status,
@@ -165,6 +163,7 @@ async def update_reservation_endpoint(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        traceback.print_exc(file=sys.stdout)
         raise HTTPException(status_code=500, detail=str(e))
 
 

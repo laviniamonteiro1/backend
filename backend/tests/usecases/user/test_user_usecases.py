@@ -20,6 +20,10 @@ def create_test_user() -> User:
         email=Email("test@example.com"),
         password=Password("secur3@Pass"),
         role="user",
+        # CORREÇÃO: Adicionado phone, document, address como None
+        phone=None,
+        document=None,
+        address=None,
     )
 
 
